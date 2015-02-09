@@ -1,0 +1,1 @@
+# jspm-bower-endpoint
