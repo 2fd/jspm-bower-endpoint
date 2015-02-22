@@ -4,7 +4,7 @@
   "description": "Bower endpoint for JSPM",
   "main": "bower.js",
   "scripts": {
-    "test": "mocha"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,8 @@
   },
   "devDependencies": {
     "chai": "^1.10.0",
+    "gulp": "^3.8.11",
+    "gulp-mocha": "^2.0.0",
     "mocha": "^2.1.0"
   }
 }
