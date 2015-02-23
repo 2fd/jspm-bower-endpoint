@@ -24,14 +24,14 @@ describe('adapters/PackageAdapter', function(){
          ********* Testing cases *********
          ********************************/
         var bower = {
-            jquery :        PackageAdapter( require('../assets/jquery.bower.json'),             'endpoint' ),
-            jqueryplugin :  PackageAdapter( require('../assets/jquery-placeholder.bower.json'), 'endpoint' ),
-            bootstrap :     PackageAdapter( require('../assets/bootstrap.bower.json'),          'endpoint' ),
-            materialize :   PackageAdapter( require('../assets/materialize.bower.json'),        'endpoint' ),
-            skeleton :      PackageAdapter( require('../assets/skeleton.bower.json'),           'endpoint' ),
-            mocha :         PackageAdapter( require('../assets/mocha.bower.json'),              'endpoint' ),
-            immutable :   PackageAdapter( require('../assets/immutable-js.bower.json'),       'endpoint' ),
-            fontawesome :   PackageAdapter( require('../assets/font-awesome.bower.json'),       'endpoint' )
+            jquery :        PackageAdapter( require('../assets/jquery.bower.json') ),
+            jqueryplugin :  PackageAdapter( require('../assets/jquery-placeholder.bower.json') ),
+            bootstrap :     PackageAdapter( require('../assets/bootstrap.bower.json') ),
+            materialize :   PackageAdapter( require('../assets/materialize.bower.json') ),
+            skeleton :      PackageAdapter( require('../assets/skeleton.bower.json') ),
+            mocha :         PackageAdapter( require('../assets/mocha.bower.json') ),
+            immutable :     PackageAdapter( require('../assets/immutable-js.bower.json') ),
+            fontawesome :   PackageAdapter( require('../assets/font-awesome.bower.json') )
         };
 
         /**
@@ -109,7 +109,7 @@ describe('adapters/PackageAdapter', function(){
         /**
          * @property {object} dependencies
          * @optional
-         *   - add "endpoint:" prefix  to dependencies
+         *   - add "pacake:" prefix  to version
          *   - if main property include css files add "css-pluging" with dependencies
          */
         it('#dependencies', function(){
@@ -119,18 +119,18 @@ describe('adapters/PackageAdapter', function(){
 
             // only js dependencies
             expect(bower.jqueryplugin.dependencies).to.deep.equal({
-                "endpoint:jquery":">=1.6"
+                "jquery":"jquery@*"
             });
 
             // only css dependencies
             expect(bower.skeleton.dependencies).to.deep.equal({
-                "css-plugin": "*"
+                "css-plugin": "github:css-plugin@*"
             });
 
             // js and css dependencies
             expect(bower.bootstrap.dependencies).to.deep.equal({
-                "endpoint:jquery": ">= 1.9.1",
-                "css-plugin": "*"
+                "jquery": "jquery@*",
+                "css-plugin": "github:css-plugin@*"
             });
         });
 
@@ -146,10 +146,10 @@ describe('adapters/PackageAdapter', function(){
 
             // only js dependencies
             expect(bower.jquery.devDependencies).to.deep.equal({
-                "endpoint:sizzle": "2.1.1-jquery.2.1.2",
-                "endpoint:requirejs": "2.1.10",
-                "endpoint:qunit": "1.14.0",
-                "endpoint:sinon": "1.8.1"
+                "sizzle": "sizzle@2.1.1-jquery.2.1.2",
+                "requirejs": "requirejs@2.1.10",
+                "qunit": "qunit@1.14.0",
+                "sinon": "sinon@1.8.1"
             });
         });
 
