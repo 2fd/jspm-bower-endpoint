@@ -17,7 +17,7 @@ var BowerEndpoint = module.exports = function BowerEndpoint (options, ui) {
     };
 
     //this._options = options;
-    //this._ui = ui;
+    this._ui = ui;
     this._endpoint = options.name;
 
     this._bower.logger.intercept(function(log){
@@ -61,6 +61,7 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
 
     var decEndpoints = bowerEndpointParser.decompose(packageName + '#' + version);
     var registry = this._endpoint;
+    var ui = this._ui;
 
     this._bower.config.cwd = dir;
     this._bower.config.directory = '';
@@ -79,6 +80,11 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
             
             packageJson.format = 'global';
             packageJson.registry = registry;
+
+            // only css dependencies
+            if(mout.object.equals(packageJson.dependencies, { 'css' : 'jspm:css@*'}))
+                ui.log('warn', 'this package only use css dependencies, \nto use it must install the css-plugin with "jspm install css"');
+
             return packageJson;
         });
 
