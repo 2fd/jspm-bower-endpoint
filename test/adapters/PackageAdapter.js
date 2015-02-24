@@ -90,7 +90,7 @@ describe('adapters/PackageAdapter', function(){
          *  array - filter and concatenated .js file
          */
         it('#main', function(){
-            expect(bower.fontawesome.main).to.be.undefined;
+            expect(bower.fontawesome.main).to.be.false;
             expect(bower.jquery.main).to.be.equal('dist/jquery.js');
             expect(bower.jqueryplugin.main).to.be.equal('jquery.placeholder.js');
             expect(bower.mocha.main).to.be.equal('mocha.js');
@@ -124,13 +124,13 @@ describe('adapters/PackageAdapter', function(){
 
             // only css dependencies
             expect(bower.skeleton.dependencies).to.deep.equal({
-                "css-plugin": "github:css-plugin@*"
+                "css": "jspm:css@*"
             });
 
             // js and css dependencies
             expect(bower.bootstrap.dependencies).to.deep.equal({
                 "jquery": "jquery@*",
-                "css-plugin": "github:css-plugin@*"
+                "css": "jspm:css@*"
             });
         });
 
