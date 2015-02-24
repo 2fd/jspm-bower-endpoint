@@ -134,7 +134,7 @@ If main includes css files, the css-plugin is added to the dependencies
     
 ```
 
-In the case of the package without js files is necessary install the css-plugin directly in project through run "jspm install css" otherwise
+In the case of the package without js files is necessary install the css-plugin directly in project through run `jspm install css`
 ```js
     
     // bower.json
