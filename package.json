@@ -1,6 +1,6 @@
 {
   "name": "jspm-bower-endpoint",
-  "version": "0.1.0-RC1",
+  "version": "0.1.0",
   "description": "Bower endpoint for JSPM",
   "main": "bower.js",
   "scripts": {
