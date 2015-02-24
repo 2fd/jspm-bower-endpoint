@@ -10,11 +10,3 @@ notifications:
   email:
     recipients:
     - i@2fd.me
-deploy:
-  provider: npm
-  email: i@2fd.me
-  api_key:
-    secure: sqNx+SLtEdc3p3yCbGz/dVEcOKdsvM0rDBvjZROTgz0/7Wrcq58KFynrPopFXc0H0vMaf4ZmOgzir0Mx4+oAVLsgtcEIL4PwmqV3yRKl3Sa5zb0QLINCN78/+fzciQKIGRQFrPlR/TJxH2bwe1doc0rdFrH+ZOqKuwyytdfWrVE=
-  on:
-    tags: true
-    repo: 2fd/jspm-bower-endpoint
