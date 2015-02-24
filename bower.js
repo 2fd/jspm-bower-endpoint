@@ -7,7 +7,7 @@ var bowerConfig = require('./lib/adapters/config');
 var bowerEndpointParser = require('bower-endpoint-parser');
 var bowerLogger = require('bower-logger');
 var mout = require('mout');
-//var Q = require('q');
+
 
 var BowerEndpoint = module.exports = function BowerEndpoint (options, ui) {
 
@@ -16,19 +16,25 @@ var BowerEndpoint = module.exports = function BowerEndpoint (options, ui) {
         logger: new bowerLogger()
     };
 
-    this._options = options;
-    this._ui = ui;
+    //this._options = options;
+    //this._ui = ui;
     this._endpoint = options.name;
 
-    /*this._bower.logger.intercept(function(log){
-        console.log(log);
-    });*/
+    this._bower.logger.intercept(function(log){
+
+        if(log.level === 'info')
+            ui.log(
+                log.level,
+                ui.format.info(
+                    '- ' + log.data.endpoint.name + ' ' + log.id + ': ' + log.message
+                )
+            );
+
+    });
 };
 
 //BowerEndpoint.prototype.locate = function (packageName){};
 BowerEndpoint.prototype.lookup = function (packageName){
-    
-    console.log(packageName);
 
     var repository = new PackageRepository(this._bower.config, this._bower.logger);
 
@@ -54,7 +60,7 @@ BowerEndpoint.prototype.lookup = function (packageName){
 BowerEndpoint.prototype.download = function (packageName, version, hash, meta, dir){
 
     var decEndpoints = bowerEndpointParser.decompose(packageName + '#' + version);
-    var endpoint = this._endpoint;
+    var registry = this._endpoint;
 
     this._bower.config.cwd = dir;
     this._bower.config.directory = '';
@@ -72,10 +78,7 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
             var packageJson = new PackageAdapter(pkg.pkgMeta);
             
             packageJson.format = 'global';
-            packageJson.registry = endpoint;
-
-            console.log(packageJson.dependencies);
-            
+            packageJson.registry = registry;
             return packageJson;
         });
 
