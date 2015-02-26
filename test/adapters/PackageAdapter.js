@@ -24,6 +24,7 @@ describe('adapters/PackageAdapter', function(){
          ********* Testing cases *********
          ********************************/
         var bower = {
+            async :        PackageAdapter( require('../assets/async.bower.json') ),
             jquery :        PackageAdapter( require('../assets/jquery.bower.json') ),
             jqueryplugin :  PackageAdapter( require('../assets/jquery-placeholder.bower.json') ),
             bootstrap :     PackageAdapter( require('../assets/bootstrap.bower.json') ),
@@ -104,6 +105,21 @@ describe('adapters/PackageAdapter', function(){
         it('#homepage', function(){
             expect(bower.jquery.homepage).to.be.undefined;
             expect(bower.mocha.homepage).to.be.equal('http://mocha.github.io/mocha');
+        });
+
+        /**
+         * @property {string} format
+         * @optional
+         *  - global by default
+         *  - use property moduleType
+         *      - node|cjs -> cjs
+         *      - amd -> amd
+         *      - globals -> global
+         *      - es6 -> es6
+         */
+        it('#format', function(){
+            expect(bower.jquery.format).to.be.equal('global');
+            expect(bower.async.format).to.be.equal('cjs');
         });
 
         /**
