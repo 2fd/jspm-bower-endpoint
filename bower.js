@@ -77,8 +77,7 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
             });
 
             var packageJson = new PackageAdapter(pkg.pkgMeta);
-            
-            packageJson.format = 'global';
+
             packageJson.registry = registry;
 
             // only css dependencies
