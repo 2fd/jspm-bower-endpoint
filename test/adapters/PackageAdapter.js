@@ -118,8 +118,20 @@ describe('adapters/PackageAdapter', function(){
          *      - es6 -> es6
          */
         it('#format', function(){
+
+            // Use case
             expect(bower.jquery.format).to.be.equal('global');
             expect(bower.async.format).to.be.equal('cjs');
+
+            // Test
+            var format = PackageAdapter.parseFormatProperty;
+            expect(format(['node', 'amd', 'globals', 'es6', 'other'])).to.be.equal('cjs');
+            expect(format(['amd', 'globals', 'es6', 'other'])).to.be.equal('amd');
+            expect(format(['globals', 'es6', 'other'])).to.be.equal('global');
+            expect(format(['es6', 'other'])).to.be.equal('es6');
+            expect(format(['other'])).to.be.equal('global');
+            expect(format( 'cjs' )).to.be.equal('cjs');
+            expect(format( undefined )).to.be.equal('global');
         });
 
         /**
