@@ -7,6 +7,7 @@ var bowerConfig = require('./lib/adapters/config');
 var bowerEndpointParser = require('bower-endpoint-parser');
 var bowerLogger = require('bower-logger');
 var mout = require('mout');
+var Q = require('q');
 
 
 var BowerEndpoint = module.exports = function BowerEndpoint (options, ui) {
@@ -36,25 +37,34 @@ var BowerEndpoint = module.exports = function BowerEndpoint (options, ui) {
 //BowerEndpoint.prototype.locate = function (packageName){};
 BowerEndpoint.prototype.lookup = function (packageName){
 
+    var fail = { notfound: true };
     var repository = new PackageRepository(this._bower.config, this._bower.logger);
 
-    return repository
-        .versions(packageName)
-        .then(function(versions){
+    return Q.Promise(function(resolve){
 
-            if(!versions)
-                return { notfound: true };
+        repository
+            .versions(packageName)
+            .then(function(versions){
 
-            var lookup = { versions : {} };
+                if(!versions)
+                  resolve( fail );
 
-            mout.array.forEach(versions, function(version){
+                var lookup = { versions : {} };
 
-                lookup.versions[version] = { hash: version};
+                mout.array.forEach(versions, function(version){
+
+                    lookup.versions[version] = { hash: version};
+
+                });
+
+                resolve(lookup);
+            })
+            .catch(function(){
+
+                resolve( fail );
 
             });
-
-            return lookup;
-        });
+    });
 };
 
 BowerEndpoint.prototype.download = function (packageName, version, hash, meta, dir){

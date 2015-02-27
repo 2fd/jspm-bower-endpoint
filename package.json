@@ -21,6 +21,7 @@
     "bower-endpoint-parser": "^0.2.2",
     "bower-logger": "^0.2.2",
     "mout": "^0.11.0",
+    "q": "^1.2.0",
     "semver": "^4.3.0"
   },
   "devDependencies": {
