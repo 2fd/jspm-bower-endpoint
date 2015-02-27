@@ -1,5 +1,4 @@
 var path = require('path');
-var mout = require('mout');
 var expect = require('chai').expect;
 var PackageAdapter = require(path.resolve('lib/adapters/PackageAdapter'));
 

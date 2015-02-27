@@ -7,6 +7,7 @@ gulp.task('test', function(){
 
     return gulp.src('test/**/*.js', {read:false})
         .pipe(mocha({
+            timeout: 10000, // 10s
             reporter: 'spec',
             ui: 'bdd'
         }))
