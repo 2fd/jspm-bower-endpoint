@@ -42,7 +42,7 @@ or
 
 Find and use the js file
 
-```js
+```javascript
     
     // bower.json
     {
@@ -67,7 +67,7 @@ Find and use the js file
 
 Use `main:false` if cannot solve in a single file or main does not include a js file
 
-```js
+```javascript
     
     // bower.json
     {
@@ -85,7 +85,7 @@ Use `main:false` if cannot solve in a single file or main does not include a js 
 ```
 
 
-```js
+```javascript
     
     // bower.json
     {
@@ -104,7 +104,7 @@ Use `main:false` if cannot solve in a single file or main does not include a js 
 
 If main includes css files, the css-plugin is added to the dependencies
 
-```js
+```javascript
     
     // bower.json
     {
@@ -135,7 +135,7 @@ If main includes css files, the css-plugin is added to the dependencies
 ```
 
 In the case of the package without js files is necessary install the css-plugin directly in project through run `jspm install css`
-```js
+```javascript
     
     // bower.json
     {
@@ -153,7 +153,29 @@ In the case of the package without js files is necessary install the css-plugin 
     
 ```
 
-### Default global format
+### Automatic format property
+> jspm-bower-endpoint >= 0.2.0
+
+If moduleType property is defined in bower package,
+the format property can be defined properly
+
+```javascript
+    
+    // bower.json
+    {
+        "moduleType": [
+            "amd",
+            "globals",
+            "node"
+        ]
+    }
+    
+    //resolve
+    {
+        "format" : "cjs"
+    }  
+
+```
 
 By default, global format is used.
 if you need use other format, use the override flag
