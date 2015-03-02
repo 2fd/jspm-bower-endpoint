@@ -2,6 +2,12 @@
   "name": "jspm-bower-endpoint",
   "version": "0.1.0",
   "description": "Bower endpoint for JSPM",
+  "keywords": [
+    "jspm",
+    "bower",
+    "endpoint",
+    "plugin"
+  ],
   "main": "bower.js",
   "scripts": {
     "test": "gulp test"
