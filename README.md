@@ -163,7 +163,7 @@ In the case of the package without js files is necessary install the css-plugin 
     
 ```
 
-### Automatic format property
+### Format property dynamically defined
 > jspm-bower-endpoint >= 0.2.0
 
 If moduleType property is defined in bower package,
