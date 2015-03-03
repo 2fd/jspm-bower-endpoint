@@ -24,6 +24,136 @@ describe('bower.js', function() {
      */
     describe('Methods', function(){
 
+        var failResponse = { notfound: true };
+        var noVersionedResponse = { versions : { latest: { hash: 'latest' } } };
+        var localPackageRedirect, localFileRedirect;
+
+        /**
+         * locate
+         */
+        describe('#locate', function(){
+
+            it('is function', function () {
+
+                expect(bower.locate).to.be.a('function');
+
+            });
+
+            it('return Promise', function () {
+
+                var promise = bower.locate();
+                expect(promise).to.has.property('then');
+                expect(promise.then).to.be.a('function');
+
+            });
+
+
+            /**
+             * Registered package name (jquery)
+             */
+            it('registered package name', function (done) {
+
+                bower
+                    .locate('jquery')
+                    .then(function( response ){
+
+                        expect(response).to.be.undefined;
+                        done();
+
+                    });
+            });
+
+            it('redirect local file', function (done) {
+
+                bower
+                    .locate('./test/assets/bower-package/other.js')
+                    .then(function(response){
+
+                        expect(response).to.be.a('object');
+                        expect(response.redirect).to.be.equal('bower:package/local/other.js');
+                        localFileRedirect = 'package/local/other.js';
+                        done();
+
+                    });
+            });
+
+            it('redirect local package', function (done) {
+
+                bower
+                    .locate('./test/assets/bower-package')
+                    .then(function(response){
+
+                        expect(response).to.be.a('object');
+                        expect(response.redirect).to.be.equal('bower:package/local/bower-package');
+                        localPackageRedirect = 'package/local/bower-package';
+                        done();
+
+                    });
+            });
+
+            it('resolve local redirection', function(done){
+
+                bower
+                    .locate(localPackageRedirect)
+                    .then(function( response ){
+
+                        expect(response).to.be.undefined;
+                        done();
+
+                    })
+            });
+
+
+            /**
+             * Not found package
+             */
+            it('not found package', function (done) {
+
+                bower
+                    .lookup('d223e1439188e478349d52476506c22e' /* md5 jquery */)
+                    .then(function( response ){
+
+                        expect(response).to.be.a('object');
+                        expect(response).to.deep.equal( failResponse );
+                        done();
+
+                    });
+            });
+
+            /**
+             * Not found file
+             */
+            it('file (not found)', function(done){
+
+                bower
+                    .locate('./test/assets/bower-package/not-found.js')
+                    .then(function( response ){
+
+                        expect(response).to.be.a('object');
+                        expect(response).to.deep.equal( failResponse );
+                        done();
+
+                    })
+            });
+
+            /**
+             * Not found dir dir
+             */
+            it('local package (not found)', function(done){
+
+                bower
+                    .locate('./test/assets/no-bower-package')
+                    .then(function( response ){
+
+                        expect(response).to.be.a('object');
+                        expect(response).to.deep.equal( failResponse );
+                        done();
+
+                    })
+            });
+        });
+
+
         /**
          * loockup
          */
@@ -41,28 +171,12 @@ describe('bower.js', function() {
                 expect(promise).to.has.property('then');
                 expect(promise.then).to.be.a('function');
 
-            })
-
-            /**
-             * Not found package
-             */
-            it('Not found package', function (done) {
-
-                bower
-                    .lookup('d223e1439188e478349d52476506c22e' /* md5 jquery */)
-                    .then(function( response ){
-
-                        expect(response).to.be.a('object');
-                        expect(response).to.deep.equal({ notfound: true });
-                        done();
-
-                    });
             });
 
             /**
              * Registered package name (jquery)
              */
-            it('Registered package name', function (done) {
+            it('registered package name', function (done) {
 
                 bower
                     .lookup('jquery')
@@ -81,14 +195,37 @@ describe('bower.js', function() {
                         done();
 
                     });
-
             });
-            //*/
 
+            /**
+             * Local file dir
+             */
+            it('file', function(done){
+
+                bower
+                    .lookup(localFileRedirect)
+                    .then(function( response ){
+
+                        expect(response).to.deep.equal( noVersionedResponse );
+                        done();
+
+                    })
+            });
+
+            /**
+             * Local package dir
+             */
+            it('local package', function(done){
+
+                bower
+                    .lookup(localPackageRedirect)
+                    .then(function( response ){
+
+                        expect(response).to.deep.equal( noVersionedResponse );
+                        done();
+
+                    })
+            });
         });
-
     });
-
-
-
-})
+});

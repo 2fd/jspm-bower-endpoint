@@ -10,29 +10,39 @@ Bower command-line adapter from jspm
 ## Install
 ```bash
     
-   npm install -g jspm-bower-endpoint
-    
-```
-
-## Add enponit
-```bash
-    
+    npm install -g jspm-bower-endpoint
+   
+    # add endpoint 
     jspm endpoint create bower jspm-bower-endpoint
     
 ```
 
 ## Use
+
 ```bash
-    
+
+	# install bower package    
     jspm install bower:skeleton
+    
+    #install local file
+    jspm install bower:./file.js
+    jspm install bower:/absolute/path/to/file.js
+    jspm install bower:~/path/to/path/to/file.js
+    
+    #install local folder package
+    jspm install bower:./local/folder
+    jspm install bower:/absolute/path/to/local/folder
+    jspm install bower:~/path/to/local/folder
     
 ```
 
-or 
+Local files and package by default are installed in `{jspm_packages}/bower/package/local/{file_name|package_name}@latest`
+for quick reference use:
 
 ```bash
     
-    jspm install skeleton=bower:skeleton
+    jspm install name=bower:./file.js
+    jspm install name=bower:./local/folder
     
 ```
 
@@ -184,5 +194,6 @@ if you need use other format, use the override flag
     
     ## Use jquery in amd mode
     jspm install bower:jquery -o "{ format:'amd', main:'src/jquery.js'}"
+    jspm install name=bower:~/local/package -o "{ format:'es6'}"
     
 ```

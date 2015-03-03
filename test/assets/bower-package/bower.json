@@ -1,0 +1,6 @@
+{
+  "name": "pack",
+  "version": "0.0.1",
+  "description": "Test package.",
+  "main": "index.js"
+}
