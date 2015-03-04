@@ -70,8 +70,8 @@ describe('bower.js', function() {
                     .then(function(response){
 
                         expect(response).to.be.a('object');
-                        expect(response.redirect).to.be.equal('bower:package/local/other.js');
                         localFileRedirect = 'package/local/other.js';
+                        expect(response.redirect).to.be.equal(optionsMock.name + ':' + localFileRedirect);
                         done();
 
                     });
@@ -84,8 +84,8 @@ describe('bower.js', function() {
                     .then(function(response){
 
                         expect(response).to.be.a('object');
-                        expect(response.redirect).to.be.equal('bower:package/local/bower-package');
                         localPackageRedirect = 'package/local/bower-package';
+                        expect(response.redirect).to.be.equal(optionsMock.name + ':' + localPackageRedirect);
                         done();
 
                     });

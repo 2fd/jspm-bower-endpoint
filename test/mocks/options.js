@@ -12,7 +12,7 @@ module.exports = {
 
     handler: 'jspm-bower-endpoint',
 
-    name: 'bower',
+    name: 'bower-endpoint',
 
     versionString: 'jspm-bower-endpoint@0.1'
 

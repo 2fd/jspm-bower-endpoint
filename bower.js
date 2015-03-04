@@ -49,6 +49,7 @@ BowerEndpoint.prototype.locate = function (packageName){
     var fail = { notfound: true };
     var cache = this._cache;
     var repository = this._repository;
+    var endpoint = this._endpoint
 
     return Q.Promise(function(resolve){
 
@@ -63,7 +64,7 @@ BowerEndpoint.prototype.locate = function (packageName){
                     var pkg = 'package/local/' + base;
                     cache[pkg] = source;
 
-                    resolve( { redirect: 'bower:' + pkg } );
+                    resolve( { redirect: endpoint + ':' + pkg } );
 
                 } else if(ConcreteResolver === resolvers.GitHub)  {
 
