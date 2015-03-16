@@ -24,18 +24,24 @@ Bower command-line adapter from jspm
     jspm install bower:skeleton
     
     #install local file
+    # jspm-bower-endpoint >= v0.2.0
     jspm install bower:./file.js
-    jspm install bower:/absolute/path/to/file.js
     jspm install bower:~/path/to/path/to/file.js
+    jspm install bower:/absolute/path/to/file.js
+    # jspm-bower-endpoint >= v0.3.0
+    jspm install bower:file://absolute/path/to/file.js
     
-    #install local folder package
+    # install local folder package
+    # jspm-bower-endpoint >= v0.2.0
     jspm install bower:./local/folder
-    jspm install bower:/absolute/path/to/local/folder
     jspm install bower:~/path/to/local/folder
+    jspm install bower:/absolute/path/to/local/folder
+    # jspm-bower-endpoint >= v0.3.0
+    jspm install bower:file://absolute/path/to/local/folder
     
 ```
 
-Local files and package by default are installed in `{jspm_packages}/bower/package/local/{file_name|package_name}@latest`
+Local files and package by default are installed in `{jspm_packages}/bower/file:{file_path|file_path}@latest`
 for quick reference use:
 
 ```bash

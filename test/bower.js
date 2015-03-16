@@ -1,5 +1,6 @@
 'use strict';
 
+var Q = require('q');
 var mout = require('mout');
 var path = require('path');
 var expect = require('chai').expect;
@@ -26,130 +27,153 @@ describe('bower.js', function() {
 
         var failResponse = { notfound: true };
         var noVersionedResponse = { versions : { latest: { hash: 'latest' } } };
-        var localPackageRedirect, localFileRedirect;
 
         /**
          * locate
          */
         describe('#locate', function(){
 
-            it('is function', function () {
-
-                expect(bower.locate).to.be.a('function');
-
-            });
-
             it('return Promise', function () {
 
                 var promise = bower.locate();
-                expect(promise).to.has.property('then');
-                expect(promise.then).to.be.a('function');
+                expect(Q.isPromise(promise)).to.be.true;
 
             });
 
+            /** Validate Not Found Response **/
+            var locateNotFound = function(locateExample){
 
-            /**
-             * Registered package name (jquery)
-             */
-            it('registered package name', function (done) {
+                return function(done){
+                    bower.locate(locateExample)
+                        .then(function(resolved){
+                            expect(resolved).to.deep.equal(failResponse);
+                            done();
+                        })
+                };
+            };
 
-                bower
-                    .locate('jquery')
-                    .then(function( response ){
+            /** Validate Not Redirect Response **/
+            var locateNotRedirect = function(locateExample){
 
-                        expect(response).to.be.undefined;
-                        done();
+                return function(done){
+                    bower.locate(locateExample)
+                        .then(function(resolved){
+                            expect(typeof resolved).to.be.equal('undefined');
+                            done();
+                        });
+                };
+            };
 
-                    });
+            /** Validate Redirect Response **/
+            var locateRedirectTo = function(locateExample, dest){
+
+                return function(done){
+                    bower.locate(locateExample)
+                        .then(function(resolved) {
+
+                            var expectedResponse = {
+                                redirect: (optionsMock.name + ':' + dest)
+                            };
+
+                            expect(resolved).to.deep.equal(expectedResponse);
+                            done();
+                        });
+                };
+            };
+
+            describe('registered package resolve', function(){
+
+                it('existing package (jquery)', locateNotRedirect('jquery'));
+                it('not fount package (d223e1439188e478349d52476506c22e)', locateNotFound('d223e1439188e478349d52476506c22e'));
+
             });
 
-            it('redirect local file', function (done) {
+            describe('local file resolve', function(){
 
-                bower
-                    .locate('./test/assets/bower-package/other.js')
-                    .then(function(response){
+                /** NOT REDIRECT **/
+                it('explicitly relative to the project directory (file:./{file})',
+                    locateNotRedirect('file:./test/assets/bower-package/other.js')
+                );
+                it.skip('relative to the user directory (file:~/{file})'/*, locateNotRedirect(?)*/);
+                it('absolute (file:/{file})',
+                    locateNotRedirect('file:' + path.resolve('./test/assets/bower-package/other.js') )
+                );
 
-                        expect(response).to.be.a('object');
-                        localFileRedirect = 'package/local/other.js';
-                        expect(response.redirect).to.be.equal(optionsMock.name + ':' + localFileRedirect);
-                        done();
+                /** REDIRECT **/
+                it('implicitly relative to the project directory (file:{file})',
+                    locateRedirectTo(
+                        'file:test/assets/bower-package/other.js',
+                        'file:./test/assets/bower-package/other.js'
+                    )
+                );
+                it('file protocol (absolute) (file://{file})',
+                    locateRedirectTo(
+                        'file:/' + path.resolve('./test/assets/bower-package/other.js'),
+                        'file:' + path.resolve('./test/assets/bower-package/other.js')
+                    )
+                );
+                //it.skip('not prefix implicit relative path ({file})') /* not supported*/
+                it('not prefix explicit relative path (./{file})',
+                    locateRedirectTo(
+                        './test/assets/bower-package/other.js',
+                        'file:./test/assets/bower-package/other.js'
+                    )
+                );
+                it.skip('not prefix relative to the user directory path (~/{file})' /*, locateRedirectTo(?) */);
+                it('not prefix absolute path (/{file})',
+                    locateRedirectTo(
+                        path.resolve('./test/assets/bower-package/other.js'),
+                        'file:' + path.resolve('./test/assets/bower-package/other.js')
+                    )
+                );
 
-                    });
+                /** NOT FOUND **/
+                it('not fount', locateNotFound('./test/assets/bower-package/not-found.js'));
+
             });
 
-            it('redirect local package', function (done) {
+            describe('local package resolve', function(){
 
-                bower
-                    .locate('./test/assets/bower-package')
-                    .then(function(response){
+                /** NOT REDIRECT **/
+                it('explicitly relative to the project directory (file:./{package})',
+                    locateNotRedirect('file:./test/assets/bower-package')
+                );
+                it.skip('relative to the user directory (file:~/{package})'/*, locateNotRedirect(?)*/);
+                it('absolute (file:/{package})',
+                    locateNotRedirect('file:' + path.resolve('./test/assets/bower-package'))
+                );
 
-                        expect(response).to.be.a('object');
-                        localPackageRedirect = 'package/local/bower-package';
-                        expect(response.redirect).to.be.equal(optionsMock.name + ':' + localPackageRedirect);
-                        done();
+                /** REDIRECT **/
+                it('implicitly relative to the project directory (file:{package})',
+                    locateRedirectTo(
+                        'file:test/assets/bower-package',
+                        'file:./test/assets/bower-package'
+                    )
+                );
+                it('file protocol (absolute) (file://{package})',
+                    locateRedirectTo(
+                        'file:/' + path.resolve('./test/assets/bower-package/other.js'),
+                        'file:' + path.resolve('./test/assets/bower-package/other.js')
+                    )
+                );
+                //it.skip('not prefix implicit relative path ({package})'); /* not supported*/
+                it('not prefix explicit relative path (./{package})',
+                    locateRedirectTo(
+                        './test/assets/bower-package',
+                        'file:./test/assets/bower-package'
+                    )
+                );
+                it.skip('not prefix relative to the user directory path (~/{package})'/*, locateRedirectTo(?)*/);
+                it('not prefix absolute path (/{package})',
+                    locateRedirectTo(
+                        path.resolve('./test/assets/bower-package'),
+                        'file:' +  path.resolve('./test/assets/bower-package')
+                    )
+                );
 
-                    });
-            });
+                /** NOT FOUND **/
+                it('not fount', locateNotFound('./test/assets/no-bower-package'));
 
-            it('resolve local redirection', function(done){
-
-                bower
-                    .locate(localPackageRedirect)
-                    .then(function( response ){
-
-                        expect(response).to.be.undefined;
-                        done();
-
-                    })
-            });
-
-
-            /**
-             * Not found package
-             */
-            it('not found package', function (done) {
-
-                bower
-                    .lookup('d223e1439188e478349d52476506c22e' /* md5 jquery */)
-                    .then(function( response ){
-
-                        expect(response).to.be.a('object');
-                        expect(response).to.deep.equal( failResponse );
-                        done();
-
-                    });
-            });
-
-            /**
-             * Not found file
-             */
-            it('file (not found)', function(done){
-
-                bower
-                    .locate('./test/assets/bower-package/not-found.js')
-                    .then(function( response ){
-
-                        expect(response).to.be.a('object');
-                        expect(response).to.deep.equal( failResponse );
-                        done();
-
-                    })
-            });
-
-            /**
-             * Not found dir dir
-             */
-            it('local package (not found)', function(done){
-
-                bower
-                    .locate('./test/assets/no-bower-package')
-                    .then(function( response ){
-
-                        expect(response).to.be.a('object');
-                        expect(response).to.deep.equal( failResponse );
-                        done();
-
-                    })
             });
         });
 
@@ -159,24 +183,17 @@ describe('bower.js', function() {
          */
         describe('#loockup', function(){
 
-            it('is function', function () {
-
-                expect(bower.lookup).to.be.a('function');
-
-            });
-
             it('return Promise', function () {
 
                 var promise = bower.lookup();
-                expect(promise).to.has.property('then');
-                expect(promise.then).to.be.a('function');
+                expect(Q.isPromise(promise)).to.be.true;
 
             });
 
             /**
              * Registered package name (jquery)
              */
-            it('registered package name', function (done) {
+            describe('registered package', function (done) {
 
                 bower
                     .lookup('jquery')
@@ -200,10 +217,10 @@ describe('bower.js', function() {
             /**
              * Local file dir
              */
-            it('file', function(done){
+            it('local file', function(done){
 
                 bower
-                    .lookup(localFileRedirect)
+                    .lookup('file:./test/assets/bower-package/other.js')
                     .then(function( response ){
 
                         expect(response).to.deep.equal( noVersionedResponse );
@@ -218,7 +235,7 @@ describe('bower.js', function() {
             it('local package', function(done){
 
                 bower
-                    .lookup(localPackageRedirect)
+                    .lookup('file:./test/assets/bower-package')
                     .then(function( response ){
 
                         expect(response).to.deep.equal( noVersionedResponse );
