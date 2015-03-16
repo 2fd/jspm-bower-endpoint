@@ -2,6 +2,7 @@
 
 var PackageAdapter = require('./lib/adapters/PackageAdapter');
 var PackageRepository = require('./lib/adapters/core/PackageRepository');
+var Project = require('./lib/adapters/core/Project');
 var bowerConfig = require('./lib/adapters/config');
 
 var resolvers = require('bower/lib/core/resolvers');
@@ -51,19 +52,18 @@ BowerEndpoint.prototype.locate = function (packageName){
         repository.resolve(packageName)
             .spread(function(ConcreteResolver, source, repositoryPackageName) {
 
-                if(packageName != repositoryPackageName) {
-                    resolve( { redirect: endpoint + ':' + repositoryPackageName } );
+                if(packageName != repositoryPackageName)
+                    return { redirect: endpoint + ':' + repositoryPackageName };
 
-                } else if(
+                if(
                     ConcreteResolver === resolvers.GitHub ||
                     ConcreteResolver === resolvers.Fs
-                ) {
-                    resolve( undefined );
+                )
+                    return undefined;
 
-                };
-
-                resolve( fail );
+                return fail;
             })
+            .then(resolve)
             .catch(function(){
                 resolve( fail );
             });
@@ -91,11 +91,11 @@ BowerEndpoint.prototype.lookup = function (packageName){
             .spread(function(ConcreteResolver, versions){
 
                 // No versioned endpoints
-                if(ConcreteResolver === resolvers.Fs) {
-                    resolve( noVersioned );
+                if(ConcreteResolver === resolvers.Fs)
+                    return noVersioned;
 
                 // Versioned endpoints
-                } else if(ConcreteResolver === resolvers.GitHub) {
+                if(ConcreteResolver === resolvers.GitHub) {
 
                     var lookup = { versions : {} };
 
@@ -105,12 +105,13 @@ BowerEndpoint.prototype.lookup = function (packageName){
 
                     });
 
-                    resolve( lookup );
+                    return lookup;
 
                 }
 
-                resolve( fail );
+                return fail;
             })
+            .then(resolve)
             .catch(function(){
 
                 resolve( fail );
@@ -127,21 +128,19 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
     var bowerConfig = this._bower.config;
     var bowerLogger = this._bower.logger;
 
-    this.bowerConfig.cwd = dir;
-    this.bowerConfig.directory = '';
-
     return Q.Promise(function(resolve, reject){
 
         repository.resolve(packageName)
             .spread(function(ConcreteResolver, source){
 
                 var decEndpoints = bowerEndpointParser.decompose(source + '#' + version);
-                var config = mout.object.deepMixIn({}, bowerConfig);
+                var config = {};
+                mout.object.deepMixIn(config, bowerConfig);
                 config.cwd = dir;
                 config.directory = '';
 
-                return project
-                    .install([decEndpoints], undefined, config)
+                var project = new Project( config, bowerLogger);
+                return project.install([decEndpoints], undefined, config);
 
             })
             .then(function(installed){
@@ -154,12 +153,9 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
 
                 packageJson.registry = registry;
 
-                // only css dependencies
-                if(mout.object.equals(packageJson.dependencies, { 'css' : 'jspm:css@*'}))
-                    ui.log('warn', 'this package only use css dependencies, \nto use it must install the css-plugin with "jspm install css"');
-
                 return packageJson;
             })
+            .then(resolve)
             .catch(reject);
     });
 };
