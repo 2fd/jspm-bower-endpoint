@@ -80,7 +80,27 @@ Find and use the js file
     
 ```
 
-Use `main:false` if cannot solve in a single file or main does not include a js file
+if main property not include js files but include a single css file, automatically added plugin dependency and include it
+> jspm-bower-endpoint >= 0.3.0
+
+```javascript
+    
+    // bower.json
+    {
+        "main": "./css/font-awesome.css"
+    }
+    
+    //resolve
+    {
+        "main" : "./css/font-awesome.css!css",
+        "dependencies": {
+            "css": "jspm:css@*"
+        }
+    }  
+    
+```
+
+Use `main:false` if cannot solve in a single file or main does not include a js|css file
 
 ```javascript
     
@@ -90,21 +110,6 @@ Use `main:false` if cannot solve in a single file or main does not include a js 
            "dist/js/bootstrap.js",
            "dist/js/bootstrap.min.js"
        ]
-    }
-    
-    //resolve
-    {
-        "main" : false
-    }  
-    
-```
-
-
-```javascript
-    
-    // bower.json
-    {
-        "main": "css/skeleton.css"
     }
     
     //resolve

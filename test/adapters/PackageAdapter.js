@@ -90,11 +90,35 @@ describe('adapters/PackageAdapter', function(){
          *  array - filter and concatenated .js file
          */
         it('#main', function(){
-            expect(bower.fontawesome.main).to.be.false;
+            var main = PackageAdapter.parseMainProperty;
+
+            expect(main(undefined)).to.be.false;
+            // resolve single file
+            expect(main('dist/file.js')).to.be.equal('dist/file.js');
+            expect(main('dist/file.css')).to.be.equal('dist/file.css!css');
+            expect(main('dist/file.other')).to.be.false;
+            expect(main('dist/')).to.be.false;
+
+            // resolve list files
+            expect(main( ['dist/file.js'] )).to.be.equal('dist/file.js');
+            expect(main( ['dist/file.js', 'dist/other.js'] )).to.be.false;
+            expect(main( ['dist/file.css'] )).to.be.equal('dist/file.css!css');
+            expect(main( ['dist/file.css', 'dist/other.css'] )).to.be.false;
+            expect(main( ['dist/file.js', 'dist/other.js', 'dist/file.css'] )).to.be.false;
+            expect(main( ['dist/file.other'] )).to.be.false;
+            expect(main( ['dist/'] )).to.be.false;
+
+            //priorities
+            expect(main( ['dist/file.js', 'dist/file.css', 'dist/file.other', 'dist/'] )).to.be.equal('dist/file.js');
+            expect(main( ['dist/file.css', 'dist/file.other', 'dist/'] )).to.be.equal('dist/file.css!css');
+
+
+            // use case
             expect(bower.jquery.main).to.be.equal('dist/jquery.js');
             expect(bower.jqueryplugin.main).to.be.equal('jquery.placeholder.js');
             expect(bower.mocha.main).to.be.equal('mocha.js');
             expect(bower.bootstrap.main).to.be.equal('dist/js/bootstrap.js');
+            expect(bower.fontawesome.main).to.be.equal('./css/font-awesome.css!css');
         });
 
         /**
