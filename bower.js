@@ -57,6 +57,7 @@ BowerEndpoint.prototype.locate = function (packageName){
 					return { redirect: endpoint + ':' + repositoryPackageName };
 
 				if(
+					ConcreteResolver === resolvers.GitRemote ||
 					ConcreteResolver === resolvers.GitHub ||
 					ConcreteResolver === resolvers.Fs
 				)
@@ -97,6 +98,7 @@ BowerEndpoint.prototype.lookup = function (packageName){
 
 				// Versioned endpoints
 				if(
+					ConcreteResolver === resolvers.GitRemote||
 					ConcreteResolver === resolvers.GitHub
 				) {
 

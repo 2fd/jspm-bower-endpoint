@@ -22,32 +22,28 @@ Bower command-line adapter from jspm
 
 	# install bower package    
     jspm install bower:skeleton
+
+    #install git+bower package
+    # jspm-bower-endpoint >= v0.3.0
+    jspm install name=bower:http//github.com/user/package.git
+    jspm install name=bower:https://github.com/user/package.git
+    jspm install name=bower:git@github.com:user/package.git
     
     #install local file
     # jspm-bower-endpoint >= v0.2.0
-    jspm install bower:./file.js
-    jspm install bower:~/path/to/path/to/file.js
-    jspm install bower:/absolute/path/to/file.js
+    jspm install name=bower:./file.js
+    jspm install name=bower:~/path/to/path/to/file.js
+    jspm install name=bower:/absolute/path/to/file.js
     # jspm-bower-endpoint >= v0.3.0
-    jspm install bower:file://absolute/path/to/file.js
+    jspm install name=bower:file://absolute/path/to/file.js
     
     # install local folder package
     # jspm-bower-endpoint >= v0.2.0
-    jspm install bower:./local/folder
-    jspm install bower:~/path/to/local/folder
-    jspm install bower:/absolute/path/to/local/folder
-    # jspm-bower-endpoint >= v0.3.0
-    jspm install bower:file://absolute/path/to/local/folder
-    
-```
-
-Local files and package by default are installed in `{jspm_packages}/bower/file:{file_path|file_path}@latest`
-for quick reference use:
-
-```bash
-    
-    jspm install name=bower:./file.js
     jspm install name=bower:./local/folder
+    jspm install name=bower:~/path/to/local/folder
+    jspm install name=bower:/absolute/path/to/local/folder
+    # jspm-bower-endpoint >= v0.3.0
+    jspm install name=bower:file://absolute/path/to/local/folder
     
 ```
 

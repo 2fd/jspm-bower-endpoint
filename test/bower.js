@@ -91,6 +91,16 @@ describe('bower.js', function() {
 
 			});
 
+			describe('git package resolve', function(){
+
+				it('http protocol (http://gitlab.com/2fd/jspm-bower-endpoint-test.git)', locateNotRedirect('http://gitlab.com/2fd/jspm-bower-endpoint-test.git'));
+				it('https protocol (https://gitlab.com/2fd/jspm-bower-endpoint-test.git)', locateNotRedirect('https://gitlab.com/2fd/jspm-bower-endpoint-test.git'));
+				it.skip('ssh protocol (git@gitlab.com:2fd/jspm-bower-endpoint-test.git)', locateNotRedirect('git@gitlab.com:2fd/jspm-bower-endpoint-test.git'));
+				
+				it('not fount package (d223e1439188e478349d52476506c22e)', locateNotFound('d223e1439188e478349d52476506c22e'));
+
+			});
+
 			describe('local file resolve', function(){
 
 				/** NOT REDIRECT **/
@@ -193,59 +203,57 @@ describe('bower.js', function() {
 
 			});
 
-			/**
-			 * Registered package name (jquery)
-			 */
-			describe('registered package', function (done) {
+			var loockupVersionedResponse = function(lookup){
 
-				bower
-					.lookup('jquery')
-					.then(function( response ){
+				return function(done){
 
-						expect(response).to.be.a('object');
-						expect(response.versions).to.be.a('object');
+					bower
+						.lookup(lookup)
+						.then(function( response ){
 
-						mout.object.forOwn( response.versions, function(val, key) {
+							expect(response).to.be.a('object');
+							expect(response.versions).to.be.a('object');
 
-							expect(val).to.be.a('object');
-							expect(val).to.deep.equal( { hash: key } );
+							mout.object.forOwn( response.versions, function(val, key) {
+
+								expect(val).to.be.a('object');
+								expect(val).to.deep.equal( { hash: key } );
+
+							});
+
+							done();
 
 						});
 
-						done();
+				};
 
-					});
-			});
+			};
 
-			/**
-			 * Local file dir
-			 */
-			it('local file', function(done){
+			var loockupNoVersionedResponse = function(lookup){
 
-				bower
-					.lookup('file:./test/assets/bower-package/other.js')
-					.then(function( response ){
+				return function (done) {
+					bower
+						.lookup(lookup)
+						.then(function( response ){
 
-						expect(response).to.deep.equal( noVersionedResponse );
-						done();
+							expect(response).to.deep.equal( noVersionedResponse );
+							done();
 
-					})
-			});
+						})
+				};
 
-			/**
-			 * Local package dir
-			 */
-			it('local package', function(done){
+			};
 
-				bower
-					.lookup('file:./test/assets/bower-package')
-					.then(function( response ){
+			/** Versioned Response */
+			it('registered package (jquery)', loockupVersionedResponse('jquery'));
+			it('http package (http://gitlab.com/2fd/jspm-bower-endpoint-test.git)', loockupVersionedResponse('http://gitlab.com/2fd/jspm-bower-endpoint-test.git'));
+			it('https package (https://gitlab.com/2fd/jspm-bower-endpoint-test.git)', loockupVersionedResponse('https://gitlab.com/2fd/jspm-bower-endpoint-test.git'));
+			it.skip('ssh package (git@gitlab.com:2fd/jspm-bower-endpoint-test.git)', loockupVersionedResponse('git@gitlab.com:2fd/jspm-bower-endpoint-test.git'));
+				
 
-						expect(response).to.deep.equal( noVersionedResponse );
-						done();
-
-					})
-			});
+			/** No Versioned Response */
+			it('local file (file:./test/assets/bower-package/other.js)', loockupNoVersionedResponse('file:./test/assets/bower-package/other.js'));
+			it('local package (file:./test/assets/bower-package)', loockupNoVersionedResponse('file:./test/assets/bower-package'));
 		});
 
 
@@ -259,9 +267,12 @@ describe('bower.js', function() {
 
 			var useCases = [
 
-				{ it: 'registered package', name : 'async', version: '0.9.0' },
-				{ it: 'local file', name : 'file:./test/assets/bower-package/other.js', version: 'latest' },
-				{ it: 'local package', name : 'file:./test/assets/bower-package', version: 'latest' }
+				{ skip: false,  it: 'registered package', version: '0.9.0',  pkg : 'async'},
+				{ skip: false,  it: 'http package', 		version: '1.0.0',  pkg : 'http://gitlab.com/2fd/jspm-bower-endpoint-test.git'},
+				{ skip: false,  it: 'https package', 		version: '1.0.0',  pkg : 'https://gitlab.com/2fd/jspm-bower-endpoint-test.git'},
+				{ skip: true,  it: 'ssh package', 		version: '1.0.0',  pkg : 'git@gitlab.com:2fd/jspm-bower-endpoint-test.git'},
+				{ skip: false,  it: 'local file', 		version: 'latest', pkg : 'file:./test/assets/bower-package/other.js' },
+				{ skip: false,  it: 'local package', 		version: 'latest', pkg : 'file:./test/assets/bower-package' }
 
 			];
 
@@ -269,21 +280,23 @@ describe('bower.js', function() {
 
 			var installpath = function(usecase){
 
-				return installBase + '/'+ usecase.name + '@' + usecase.version;
+				return installBase + '/'+ usecase.pkg + '@' + usecase.version;
 
 			};
 
 			var bowerDownload = function(usecase){
 
-				return bower.download(usecase.name, usecase.version, usecase.version, undefined, installpath(usecase))
+				return bower.download(usecase.pkg, usecase.version, usecase.version, undefined, installpath(usecase))
 
 			};
 
 
 			mout.array.forEach(useCases, function(usecase){
+
+				var test = usecase.skip ? it.skip : it;
 				
-				it(
-					util.format('%s (%s@%s)', usecase.it, usecase.name, usecase.version),
+				test(
+					util.format('%s (%s@%s)', usecase.it, usecase.pkg, usecase.version),
 					function(done){
 						this.timeout(0);
 
