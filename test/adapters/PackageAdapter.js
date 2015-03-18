@@ -23,15 +23,15 @@ describe('adapters/PackageAdapter', function(){
          ********* Testing cases *********
          ********************************/
         var bower = {
-            async :        PackageAdapter( require('../assets/async.bower.json') ),
-            jquery :        PackageAdapter( require('../assets/jquery.bower.json') ),
-            jqueryplugin :  PackageAdapter( require('../assets/jquery-placeholder.bower.json') ),
-            bootstrap :     PackageAdapter( require('../assets/bootstrap.bower.json') ),
-            materialize :   PackageAdapter( require('../assets/materialize.bower.json') ),
-            skeleton :      PackageAdapter( require('../assets/skeleton.bower.json') ),
-            mocha :         PackageAdapter( require('../assets/mocha.bower.json') ),
-            immutable :     PackageAdapter( require('../assets/immutable-js.bower.json') ),
-            fontawesome :   PackageAdapter( require('../assets/font-awesome.bower.json') )
+            async :        PackageAdapter( require('../assets/use-case/async.bower.json') ),
+            jquery :        PackageAdapter( require('../assets/use-case/jquery.bower.json') ),
+            jqueryplugin :  PackageAdapter( require('../assets/use-case/jquery-placeholder.bower.json') ),
+            bootstrap :     PackageAdapter( require('../assets/use-case/bootstrap.bower.json') ),
+            materialize :   PackageAdapter( require('../assets/use-case/materialize.bower.json') ),
+            skeleton :      PackageAdapter( require('../assets/use-case/skeleton.bower.json') ),
+            mocha :         PackageAdapter( require('../assets/use-case/mocha.bower.json') ),
+            immutable :     PackageAdapter( require('../assets/use-case/immutable-js.bower.json') ),
+            fontawesome :   PackageAdapter( require('../assets/use-case/font-awesome.bower.json') )
         };
 
         /**

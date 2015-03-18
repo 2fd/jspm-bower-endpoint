@@ -27,3 +27,5 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 .c9
+
+test/assets/install
