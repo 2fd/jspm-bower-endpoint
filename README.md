@@ -11,8 +11,11 @@ Bower command-line adapter from jspm
     
     npm install -g jspm-bower-endpoint
    
-    # add endpoint 
-    jspm endpoint create bower jspm-bower-endpoint
+    # add registry endpoint
+    jspm registry create bower jspm-bower-endpoint
+
+    # jspm < 0.15.0
+    # jspm endpoint create bower jspm-bower-endpoint
     
 ```
 
