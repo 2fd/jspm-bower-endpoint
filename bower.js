@@ -9,21 +9,30 @@ var resolvers = require('bower/lib/core/resolvers');
 
 var bowerEndpointParser = require('bower-endpoint-parser');
 var bowerLogger = require('bower-logger');
+var path = require('path');
 var mout = require('mout');
 var Q = require('q');
 
 var BowerEndpoint = module.exports = function BowerEndpoint (options, ui) {
+
+    this._ui = ui;
+    this._endpoint = options.name;
+    this._tmp = options.tmpDir;
+    this._api = options.apiVersion;
+    this._version = options.versionString;
 
 	this._bower = {
 		config: bowerConfig({}),
 		logger: new bowerLogger()
 	};
 
-	this._ui = ui;
-	this._endpoint = options.name;
-	this._tmp = options.tmpDir;
-	this._api = options.apiVersion;
-	this._version = options.versionString;
+    this._bower.config.tmp = path.resolve( this._tmp, 'tmp');
+    this._bower.config.storage.packages = path.resolve( this._tmp, 'packages');
+    this._bower.config.storage.links = path.resolve( this._tmp, 'links');
+    this._bower.config.storage.completion = path.resolve( this._tmp, 'completion');
+    this._bower.config.storage.registry = path.resolve( this._tmp, 'registry');
+    this._bower.config.storage.empty = path.resolve( this._tmp, 'empty');
+
 	this._repository = new PackageRepository(this._bower.config, this._bower.logger);
 
 	this._bower.logger.intercept(function(log){

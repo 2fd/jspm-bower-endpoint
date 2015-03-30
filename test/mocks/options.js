@@ -6,7 +6,7 @@ module.exports = {
         build: 120
     },
 
-    tmpDir: '~/.jspm/bower-cache',
+    tmpDir: './test/assets/.jspm',
 
     apiVersion: '1.0',
 

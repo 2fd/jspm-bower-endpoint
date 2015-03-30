@@ -24,8 +24,12 @@ build/Release
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
 node_modules
 
-# Users Environment Variables
+# IDES
+.idea
+*.sublime-project
+*.sublime-settings
 .lock-wscript
 .c9
 
 test/assets/install
+test/assets/.jspm
