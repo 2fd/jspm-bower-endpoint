@@ -145,7 +145,6 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
 				config.cwd = dir;
 				config.directory = '';
 
-
 				var project = new Project( config, bowerLogger);
 				return project.install([decEndpoints], undefined, config);
 
@@ -157,10 +156,7 @@ BowerEndpoint.prototype.download = function (packageName, version, hash, meta, d
 					return cur;
 				});
 
-				var packageJson = new PackageAdapter(pkg.pkgMeta);
-
-				packageJson.registry = registry;
-
+				var packageJson = new PackageAdapter(pkg.pkgMeta, registry);
 
 				return packageJson;
 			})

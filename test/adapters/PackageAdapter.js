@@ -130,6 +130,16 @@ describe('adapters/PackageAdapter', function(){
             expect(bower.mocha.homepage).to.be.equal('http://mocha.github.io/mocha');
         });
 
+
+        /**
+         * @property {string} registry
+         * @optional
+         */
+        it('#registry', function(){
+            expect(PackageAdapter({}).registry).to.be.undefined;
+            expect(PackageAdapter({}, 'registryName').registry).to.be.equal('registryName');
+        });
+
         /**
          * @property {string} format
          * @optional
